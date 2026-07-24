@@ -17,10 +17,10 @@ Every result carries a SHA-256 cryptographic fingerprint. Purchasing agents can 
 
 ## Service endpoint
 
-Base URL: https://ihb.autonomicresiliencecollective.org
-MCP manifest: https://ihb.autonomicresiliencecollective.org/mcp.json
-SSE transport: https://ihb.autonomicresiliencecollective.org/sse
-OpenAPI docs: https://ihb.autonomicresiliencecollective.org/docs
+Base URL: https://arc-baseline-kernel.onrender.com
+MCP manifest: https://arc-baseline-kernel.onrender.com/mcp.json
+SSE transport: https://arc-baseline-kernel.onrender.com/sse
+OpenAPI docs: https://arc-baseline-kernel.onrender.com/docs
 
 ## Tools
 
