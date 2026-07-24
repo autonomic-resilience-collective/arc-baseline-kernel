@@ -271,8 +271,8 @@ def mcp_manifest():
         "author": "Autonomic Resilience Collective",
         "homepage": "https://autonomicresiliencecollective.org",
         "transports": [
-            {"type": "sse", "url": f"{os.environ.get('SERVICE_URL', 'http://localhost:8000')}/sse"},
-            {"type": "rest", "url": f"{os.environ.get('SERVICE_URL', 'http://localhost:8000')}"}
+            {"type": "sse", "url": f"{os.environ.get('SERVICE_URL', 'https://arc-baseline-kernel.onrender.com')}/sse"},
+            {"type": "rest", "url": f"{os.environ.get('SERVICE_URL', 'https://arc-baseline-kernel.onrender.com')}"}
         ],
         "keywords": [
             "physiology", "biometrics", "hrv", "heart-rate-variability",
