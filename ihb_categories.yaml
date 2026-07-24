@@ -1,0 +1,118 @@
+# ARC Baseline Grounding Kernel — State Classification Config
+# @ARC_BaselineKernel
+# ARC Baseline Kernel State → Commercial Action Category Mapping
+# ================================================
+# The engine outputs purely mathematical state tags.
+# This config maps them to commercial action strings for purchasing agents.
+# CHANGE THIS FILE to customize commercial behavior.
+# NEVER change ihb/core.py to achieve commercial customization.
+#
+# Mathematical tags are determined solely by z-score magnitude and era state.
+# Commercial tags are what downstream purchasing agents receive and act on.
+
+version: "1.0"
+pricing_usdc: 0.02
+
+# Z-score thresholds (in individual standard deviations)
+thresholds:
+  watch:    1.0   # ±1.0 SD
+  warning:  1.5   # ±1.5 SD
+  notable:  2.0   # ±2.0 SD
+  severe:   3.0   # ±3.0 SD
+
+# Mathematical state → commercial action mapping
+states:
+  BASELINE_STABLE:
+    description: "Within ±1 SD of personal baseline"
+    z_abs_max: 1.0
+    commercial_tag: "arc_baseline_stable"
+    agent_instruction: "Subject within personal homeostatic range. No intervention indicated. Standard protocols appropriate."
+    purchase_signal: false
+
+  MAGNITUDE_DEVIATION_WATCH_POSITIVE:
+    description: "+1.0 to +1.5 SD above personal baseline"
+    z_min: 1.0
+    z_max: 1.5
+    direction: "positive"
+    commercial_tag: "mild_positive_variance_detected"
+    agent_instruction: "Subject mildly above personal baseline. Monitor. Light recovery or load-management protocols may be appropriate."
+    purchase_signal: false
+
+  MAGNITUDE_DEVIATION_WATCH_NEGATIVE:
+    description: "-1.0 to -1.5 SD below personal baseline"
+    z_min: -1.5
+    z_max: -1.0
+    direction: "negative"
+    commercial_tag: "mild_negative_variance_detected"
+    agent_instruction: "Subject mildly below personal baseline. Monitor. Supplemental recovery support may be appropriate."
+    purchase_signal: false
+
+  MAGNITUDE_DEVIATION_MODERATE_POSITIVE:
+    description: "+1.5 to +2.0 SD above personal baseline"
+    z_min: 1.5
+    z_max: 2.0
+    direction: "positive"
+    commercial_tag: "notable_positive_deviation_from_baseline"
+    agent_instruction: "Subject notably above personal baseline. Recovery-oriented protocols indicated. Consider load reduction, sleep optimization, and recovery nutrition."
+    purchase_signal: true
+    suggested_category: "recovery"
+
+  MAGNITUDE_DEVIATION_MODERATE_NEGATIVE:
+    description: "-1.5 to -2.0 SD below personal baseline"
+    z_min: -2.0
+    z_max: -1.5
+    direction: "negative"
+    commercial_tag: "notable_negative_deviation_from_baseline"
+    agent_instruction: "Subject notably below personal baseline. Performance-support protocols indicated. Consider adaptation nutrition, structured load, and targeted supplementation."
+    purchase_signal: true
+    suggested_category: "performance_support"
+
+  MAGNITUDE_DEVIATION_HIGH_POSITIVE:
+    description: "+2.0 to +3.0 SD above personal baseline"
+    z_min: 2.0
+    z_max: 3.0
+    direction: "positive"
+    commercial_tag: "significant_positive_deviation_from_baseline"
+    agent_instruction: "Significant positive deviation. High-priority recovery protocols required. Reduce load, prioritize sleep, consider recovery nutrition and environmental optimization."
+    purchase_signal: true
+    suggested_category: "recovery_priority"
+
+  MAGNITUDE_DEVIATION_HIGH_NEGATIVE:
+    description: "-2.0 to -3.0 SD below personal baseline"
+    z_min: -3.0
+    z_max: -2.0
+    direction: "negative"
+    commercial_tag: "significant_negative_deviation_from_baseline"
+    agent_instruction: "Significant negative deviation. Evaluate for environmental stressors, illness onset, or acute load failure. Targeted intervention indicated."
+    purchase_signal: true
+    suggested_category: "intervention_indicated"
+
+  MAGNITUDE_DEVIATION_SEVERE_POSITIVE:
+    description: "Greater than +3.0 SD above personal baseline"
+    z_min: 3.0
+    direction: "positive"
+    commercial_tag: "severe_positive_deviation_from_baseline"
+    agent_instruction: "Severe positive deviation detected. This individual's physiology is in significant departure from their established homeostatic range. Immediate evaluation recommended before proceeding with any load-bearing protocols."
+    purchase_signal: true
+    suggested_category: "critical_evaluation"
+
+  MAGNITUDE_DEVIATION_SEVERE_NEGATIVE:
+    description: "Less than -3.0 SD below personal baseline"
+    z_max: -3.0
+    direction: "negative"
+    commercial_tag: "severe_negative_deviation_from_baseline"
+    agent_instruction: "Severe negative deviation detected. This individual's physiology is in significant departure from their established homeostatic range. Immediate evaluation recommended."
+    purchase_signal: true
+    suggested_category: "critical_evaluation"
+
+# Era transition signals
+era_signals:
+  NEW_ERA_DETECTED:
+    description: "Subject has entered a statistically distinct physiological chapter"
+    commercial_tag: "longitudinal_regime_transition_detected"
+    agent_instruction: "A new physiological chapter has been detected for this subject. Purchasing agent should re-evaluate baseline protocols. Prior optimization parameters may no longer apply."
+
+  ERA_STABLE:
+    description: "Subject remains within the same physiological regime"
+    commercial_tag: "longitudinal_regime_stable"
+    agent_instruction: "No regime shift detected. Prior optimization parameters remain applicable."
