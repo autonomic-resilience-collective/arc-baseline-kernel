@@ -1,3 +1,13 @@
+from __future__ import annotations
+
+import os
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from uagents_core.utils.registration import (
+    register_chat_agent,
+    RegistrationRequestCredentials,
+)
+
 """
 IHB MCP Server — Autonomic Resilience Collective
 =================================================
@@ -42,25 +52,6 @@ Provider:  Autonomic Resilience Collective | autonomicresiliencecollective.org
 # Citation:  Buckingham & Johnson, ACM BCB 2026, DOI: 10.1145/3807503.3816889
 # Kernel ID: @ARC_BaselineKernel
 # ═══════════════════════════════════════════════════════════════════════════
-
-import os
-from uagents_core.utils.registration import (
-    register_chat_agent,
-    RegistrationRequestCredentials,
-)
-
-from __future__ import annotations
-
-import asyncio
-import json
-import os
-from typing import Optional
-
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel, Field
-
-
 
 # ─── Agent-Dense Mode helper ──────────────────────────────────────────────────
 
