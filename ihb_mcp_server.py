@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import os
+from typing import Optional
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 from uagents_core.utils.registration import (
     register_chat_agent,
     RegistrationRequestCredentials,
