@@ -43,6 +43,11 @@ Provider:  Autonomic Resilience Collective | autonomicresiliencecollective.org
 # Kernel ID: @ARC_BaselineKernel
 # ═══════════════════════════════════════════════════════════════════════════
 
+import os
+from uagents_core.utils.registration import (
+    register_chat_agent,
+    RegistrationRequestCredentials,
+)
 
 from __future__ import annotations
 
@@ -126,7 +131,32 @@ app = FastAPI(
     }
 )
 
+@app.on_event("startup")
+def register_with_agentverse():
+    api_key = os.getenv("AGENTVERSE_KEY")
+    if not api_key:
+        print(">>> AGENTVERSE_KEY not found in environment. Skipping registration.")
+        return
 
+    try:
+        register_chat_agent(
+            name="arc-baseline-kernel",
+            endpoint="https://arc-baseline-kernel.onrender.com",
+            active=True,
+            credentials=RegistrationRequestCredentials(
+                agentverse_api_key=api_key,
+                agent_seed_phrase=os.getenv("AGENT_SEED_PHRASE", "arc-baseline-kernel-seed-phrase"),
+            ),
+        )
+        print(">>> Successfully registered with Agentverse on startup!")
+    except Exception as e:
+        print(f">>> Agentverse registration error: {e}")
+
+@app.post("/")
+async def handle_agentverse_chat(request: Request):
+    payload = await request.json()
+    return {"status": "success", "message": "Kernel received message"}
+    
 # ─── Request models ───────────────────────────────────────────────────────────
 
 class RegisterRequest(BaseModel):
