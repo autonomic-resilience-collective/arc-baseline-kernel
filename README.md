@@ -1,7 +1,7 @@
 # ARC Baseline Grounding Kernel
 ## @ARC_BaselineKernel | Autonomic Resilience Collective
 
-**Peer-reviewed | ACM BCB 2026 | DOI: 10.1145/3807503.3816889**
+**Peer-reviewed foundation | ACM BCB 2026 | DOI: 10.1145/3807503.3816889**
 
 ---
 
@@ -16,78 +16,84 @@ Citation:     Buckingham & Johnson, ACM BCB 2026
 
 ### What This Is
 
-A production-ready Model Context Protocol (MCP) server exposing the ARC Baseline Grounding Kernel as a fully autonomous, AI-to-AI (A2A) queryable service. Any AI agent can discover, pay for, and query baseline variance state — with zero human involvement after initial wallet funding.
+A deterministic Model Context Protocol (MCP) / REST service exposing the ARC Individualized Homeostatic Baseline (IHB) framework to AI agents.
 
-All computation is deterministic. All numbers originate from `ihb/core.py`. No LLM smoothing. No fabrication. Every result carries a SHA-256 provenance seal.
+The **v1 service** contains the existing A2A query/payment architecture. The **v2 scientific-hardening layer** now adds a neutral measurement API that explicitly separates:
 
----
+- instantaneous deviation magnitude from sustained persistence/regime evidence;
+- observed-data primary analysis from any future sensitivity/imputation analysis;
+- measurement-source epochs from one another unless comparability is demonstrated;
+- neutral IHB measurement from downstream domain/commercial action policy.
 
-### Payment Rails
+This branch is a **development hardening release**, not yet a production-validation claim. The architecture is substantially implemented, but the vNext domain parameters and change-point/persistence choices remain subject to benchmark validation and scientific review.
 
-| Rail | Status | Header |
-|---|---|---|
-| USDC x402 (Base L2) | ✅ Live | `X-Payment-Proof: <txhash>` |
-| Nevermined x402 | ✅ Live (requires plan setup) | `X-Nevermined-Auth: <token>` |
-| Visa/Stripe via Nevermined | ✅ Via Nevermined dashboard | — |
-
----
-
-### Service Tiers (Nevermined Plan Names)
-
-| Tier | Plan Name | Price | Endpoint |
-|---|---|---|---|
-| Micro | ARC Micro Baseline Check | $0.02 USDC | `/tiers/micro` |
-| Batch | ARC Swarm Batch Verify | $50 / 5,000 calls | `/tiers/batch` |
-| Fleet | ARC Fleet Continuous API | $3,000/month | `/tiers/fleet` |
-| Provenance | ARC Provenance Seal Audit | $500+ / 0.05% | `/tiers/high_stakes` |
+All v2 mathematical outputs originate from the vendored canonical ARC IHB package sourced from `autonomic-resilience-collective/ARC-IHB-Engine`. The deployment no longer relies on a silent fallback implementation when that package is absent. See `ihb/UPSTREAM.md`.
 
 ---
 
-### Environment Variables
+### Scientific model
 
-```bash
-# Required
-ARC_USDC_WALLET          # Your Base L2 USDC receiving address
+IHB is best described as an **individualized longitudinal deviation and temporal-state framework**.
 
-# Nevermined (register at app.nevermined.app)
-NVM_API_KEY              # Nevermined API key
-NVM_AGENT_ID             # Your registered agent DID
-NVM_ENVIRONMENT          # "sandbox" or "live"
-NVM_PLAN_MICRO           # "ARC Micro Baseline Check" plan ID
-NVM_PLAN_BATCH           # "ARC Swarm Batch Verify" plan ID
-NVM_PLAN_FLEET           # "ARC Fleet Continuous API" plan ID
-NVM_PLAN_HIGH_STAKES     # "ARC Provenance Seal Audit" plan ID
+The core architecture is domain-agnostic; operating parameters are not assumed to be domain-independent. Baseline duration, minimum observations, persistence criteria, segmentation rules, sampling cadence, source-comparability rules, and state-transition sensitivity require domain-specific justification.
 
-# Pricing (defaults shown)
-USDC_PER_QUERY=0.02
-VERIFY_PRICE_STANDARD=1.00
-VERIFY_PRICE_ELEVATED=2.50
-VERIFY_PRICE_HIGH_STAKES=5.00
-REPORT_PRICE_CHAPTER=25.00
-REPORT_PRICE_DEEP=50.00
-VALUE_BASED_RATE=0.0005
-```
+The v2 measurement layer answers:
+
+> What is the measured state relative to this entity's own established reference, and how strong is the evidence supporting that characterization?
+
+It does **not** prescribe treatment, purchasing, underwriting, ecological intervention, or other domain actions. Those belong in downstream adapters or commercial decision layers.
+
+---
+
+### v2 neutral measurement endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /v2/manifest` | vNext architecture and policy manifest |
+| `POST /v2/register` | register an entity with an explicit domain/development profile |
+| `POST /v2/push` | ingest observed data with source/device provenance |
+| `POST /v2/query_state` | return neutral state evidence + SHA-256 provenance fingerprint |
+| `GET /v2/source_epochs/{subject_id}` | list measurement-source epochs |
+| `POST /v2/compare_sources` | report overlap/correlation/bias evidence without auto-authorizing pooling |
+| `GET /v2/subjects` | inspect registered v2 entities |
+
+A source change creates a new source epoch by default. The rule is **validate before harmonize**.
+
+---
+
+### Existing v1 payment rails
+
+The existing v1 A2A payment architecture remains in the repository during transition.
+
+| Rail | Repository implementation |
+|---|---|
+| USDC x402 (Base L2) | implemented |
+| Nevermined x402 | integration present; requires account/plan configuration |
+| Visa/Stripe via Nevermined | dependent on external Nevermined/Visa configuration |
+
+Existing service tiers include micro, batch, fleet, and higher-stakes provenance routes. Pricing/configuration should be treated as commercial policy rather than part of the scientific measurement standard.
 
 ---
 
 ### Deployment
 
-```bash
-# 1. Copy the ihb/ package from your ARC codebase into this directory
-cp -r /path/to/ARC-IHB-Engine/ihb ./ihb
+The Docker build now vendors the canonical `ihb/` package directly into the service image and starts the combined v1 + v2 app:
 
-# 2. Run the deployment script
-chmod +x deploy.sh && ./deploy.sh
+```bash
+docker build -t arc-baseline-kernel .
+docker run -p 8000:8000 arc-baseline-kernel
 ```
+
+Required/optional environment variables for paid v1 routes remain documented in the deployment configuration.
 
 ---
 
 ### Agent Discovery
 
-- **MCP Manifest:** `/mcp.json`
+- **MCP Manifest (v1):** `/mcp.json`
+- **vNext Manifest:** `/v2/manifest`
 - **SSE Transport:** `/sse`
-- **Tool Spec:** `llm-tools-spec.json` (Hugging Face registry)
-- **llms.txt:** Place at `autonomicresiliencecollective.org/llms.txt`
+- **Tool Spec:** `llm-tools-spec.json`
 - **Docs:** `/docs`
 - **Health:** `/health`
 
@@ -97,22 +103,32 @@ chmod +x deploy.sh && ./deploy.sh
 
 | File | Purpose |
 |---|---|
-| `ihb_mcp_server.py` | Main FastAPI app — all 23 routes |
-| `ihb_state.py` | Stateful baseline wrapper (Layer 2) |
-| `ihb_translator.py` | Temporal privacy front door — strips dates |
-| `ihb_payment.py` | x402 USDC + idempotency cache |
-| `ihb_nvm_payment.py` | Nevermined SDK integration |
-| `ihb_verify_tiers.py` | Multi-tier pricing router |
-| `ihb_verify_action.py` | Enterprise provenance gate |
-| `ihb_categories.yaml` | State → commercial action mapping |
-| `llm-tools-spec.json` | Hugging Face / agent registry manifest |
-| `llms.txt` | Web-crawling AI agent discovery |
-| `render.yaml` | Render.com deployment config |
-| `Dockerfile` | Container build |
-| `requirements.txt` | Python dependencies |
-| `deploy.sh` | GitHub + Render deployment script |
-| `agent_quickstart.py` | A2A purchase demo |
+| `ihb/` | vendored canonical ARC IHB math + vNext evidence primitives |
+| `ihb/UPSTREAM.md` | upstream provenance and parity rule |
+| `ihb_mcp_server.py` | existing v1 FastAPI/MCP service |
+| `ihb_state.py` | existing v1 stateful wrapper |
+| `ihb_vnext_state.py` | v2 source-epoch-aware neutral measurement state |
+| `ihb_vnext_router.py` | v2 FastAPI routes |
+| `ihb_vnext_service.py` | combined v1 + v2 app entrypoint |
+| `ihb_translator.py` | temporal privacy front door; strips calendar dates |
+| `ihb_payment.py` | x402 USDC payment middleware |
+| `ihb_nvm_payment.py` | Nevermined integration |
+| `ihb_verify_tiers.py` | v1 multi-tier pricing router |
+| `ihb_verify_action.py` | v1 action/provenance gate |
+| `ihb_categories.yaml` | legacy v1 state-to-action policy; not part of v2 neutral measurement |
+| `tests/test_vnext.py` | vNext regression tests |
+| `Dockerfile` | combined service deployment |
 
 ---
 
-*Autonomic Resilience Collective | EIN: 41-2759286 | SAM UEI Active through February 2027*
+### Current scientific hardening priorities
+
+1. benchmark baseline diagnostics under autocorrelation, skew and changing variance;
+2. benchmark persistence/change-point methods under isolated spikes, sustained shifts and gradual drift;
+3. quantify prospective sequential detection performance separately from retrospective segmentation;
+4. validate source-comparability rules using overlap/agreement data;
+5. define domain profiles for physiology, ecology, habitat systems, and other applications without pretending one parameter set is universal.
+
+---
+
+*Autonomic Resilience Collective | research@autonomicresiliencecollective.org | autonomicresiliencecollective.org*
